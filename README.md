@@ -4,9 +4,14 @@
 
 Gems:
 
- - tidy
+ - nokogiri
  - sinatra
  - json
+
+Nokogiri also requires:
+
+ - libxslt-dev
+ - libxml2-dev
 
 ## Configs
 
@@ -14,7 +19,7 @@ Set environment variable `RACK_ENV` to `production` if in production. This will 
 
 # API Documentation
 
-## POST /clear
+## POST /clean
 
 ### Parameters
 

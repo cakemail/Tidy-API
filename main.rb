@@ -1,5 +1,6 @@
+require 'rubygems'
 require 'sinatra'
-require 'tidy'
+require 'nokogiri'
 require 'json'
 
 configure :production do
@@ -20,11 +21,7 @@ post '/clean' do
 
   html = params[:html]
 
-  cleaned_html = Tidy.open(:show_warnings=>false) do |tidy|
-    tidy.options.output_xml = true
-    xml = tidy.clean(html)
-    xml
-  end
+  cleaned_html = Nokogiri::HTML(html).to_html
 
   content_type :json
   data = {:html => cleaned_html}
