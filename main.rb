@@ -21,9 +21,15 @@ post '/clean' do
 
   html = params[:html]
 
-  cleaned_html = Nokogiri::HTML(html).to_html
+  doc = Nokogiri::HTML(html)
+
+  # Remove the <!-- and --> inside <style> elements.
+  # They cause CKEditor to crash.
+  doc.xpath('//style').each do |style|
+    style.content = style.content.gsub /^[\s\t\n\r]{0,}<!--(.*)-->[\s\t\n\r]{0,}$/m, '\1'
+  end
 
   content_type :json
-  data = {:html => cleaned_html}
+  data = {:html => doc.to_html}
   data.to_json
 end
