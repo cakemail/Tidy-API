@@ -1,4 +1,4 @@
 source :rubygems
-gem "sinatra"
+gem "sinatra", ">= 2.0.0"
 gem "json"
 gem "nokogiri"
