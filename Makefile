@@ -1,6 +1,6 @@
 # vim: set noexpandtab ts=2 :
 
-NAME = docker.r53.wbsrvc.com/tidy
+NAME = registry.ovh.cakemail.io
 
 default:
 	@echo RTFMakefile
