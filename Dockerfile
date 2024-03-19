@@ -46,4 +46,4 @@ RUN sudo su cake -c "cd ${PROJECT_PATH} && bundle install --quiet --deployment -
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
 ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
 
-CMD /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+CMD ["/usr/bin/supervisord"]
