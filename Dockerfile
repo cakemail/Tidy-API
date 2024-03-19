@@ -5,32 +5,42 @@ MAINTAINER sebastien@cakemail.com
 ENV DEBIAN_FRONTEND noninteractive
 ENV PROJECT_PATH /opt/cakemail/sinatra-apps/tidy
 
-# Update package index and install required packages
-RUN apt-get update && apt-get install -y \
+# Debian Wheezy sources are now on archive
+# RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list
+# RUN sed -i 's/security.debian.org/archive.debian.org/g' /etc/apt/sources.list
+# RUN sed -i '/wheezy-updates/d' /etc/apt/sources.list
+
+RUN apt-get update && apt-get install \
   apache2 \
   libapache2-mod-passenger \
   git \
   rsyslog \
   supervisor \
+  python-requests \
+  python-boto \
+  sudo \
   libxml2-dev \
-  libxslt1-dev
+  libxslt1-dev --force-yes -y 
 
-# Set the working directory in the container
-WORKDIR $PROJECT_PATH
+RUN gem install bundler -v '~> 1.17.2'
 
-# Copy only the Gemfile and Gemfile.lock to leverage Docker cache
-COPY Gemfile Gemfile.lock ./
+# configure apache
+ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy
+RUN a2dissite 000-default && a2enmod rewrite && a2enmod headers && a2ensite tidy
 
-# Install Ruby dependencies
-RUN gem install bundler:1.17.2
-RUN bundle install
+# deploy user
+RUN useradd -u 1050 -G www-data -m -d /home/cake cake
 
-# Copy the rest of the application code into the container
-COPY . .
+# prepare directories
+RUN mkdir -p ${PROJECT_PATH} && chown -R cake:cake ${PROJECT_PATH}
 
+ADD . ${PROJECT_PATH}
 
-# Expose the port on which your Sinatra application runs
-EXPOSE 4567
+# deploy the project
+RUN sudo su cake -c "cd ${PROJECT_PATH} && bundle install --quiet --path=${PROJECT_PATH}/bundle"
 
-# Run the server specified in main.rb when the container launches
-CMD ["ruby", "main.rb"]
+# remote logging
+ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
+ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
+
+CMD /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
