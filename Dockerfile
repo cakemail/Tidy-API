@@ -29,8 +29,8 @@ RUN pip install python-requests
 RUN gem install bundler:1.17.2
 
 # configure apache
-ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy
-RUN a2dissite 000-default && a2enmod rewrite && a2enmod headers && a2ensite tidy
+ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
+RUN a2dissite 000-default && a2enmod rewrite && a2enmod headers && a2ensite tidy.conf
 
 
 # deploy user
@@ -41,15 +41,19 @@ RUN mkdir -p ${PROJECT_PATH} && chown -R cake:cake ${PROJECT_PATH}
 
 ADD . ${PROJECT_PATH}
 
-# deploy the project
-RUN sudo su cake -c "cd ${PROJECT_PATH} && bundle install --quiet --deployment --path=${PROJECT_PATH}/bundle"
+# Change ownership of project directory
+RUN chown -R cake:cake ${PROJECT_PATH}
+
+# Switch to the cake user and run bundle install
+
+WORKDIR ${PROJECT_PATH}
+RUN sudo su cake -c "bundle config set --local path 'bundle' && bundle install --quiet"
+
 
 # remote logging
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
 ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
 
-EXPOSE 80
+# CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
-
-CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-# CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord"]
