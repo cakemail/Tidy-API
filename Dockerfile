@@ -16,16 +16,20 @@ RUN apt-get update && apt-get install \
   git \
   rsyslog \
   supervisor \
-  python-requests \
-  python-boto \
+  # python-requests \
+  # python-boto \
+  python3-pip \
   sudo \
   libxml2-dev \
-  libxslt1-dev --force-yes -y 
+  libxslt1-dev -y
 
-RUN gem install bundler -v '~> 1.17.2'
+RUN pip install boto
+RUN pip install python-requests
+
+RUN gem install bundler:1.17.2
 
 # configure apache
-ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy
+ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
 RUN a2dissite 000-default && a2enmod rewrite && a2enmod headers && a2ensite tidy
 
 # deploy user
@@ -37,10 +41,14 @@ RUN mkdir -p ${PROJECT_PATH} && chown -R cake:cake ${PROJECT_PATH}
 ADD . ${PROJECT_PATH}
 
 # deploy the project
-RUN sudo su cake -c "cd ${PROJECT_PATH} && bundle install --quiet --path=${PROJECT_PATH}/bundle"
+RUN sudo su cake -c "cd ${PROJECT_PATH} && bundle install --quiet --deployment --path=${PROJECT_PATH}/bundle"
 
 # remote logging
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
 ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
 
-CMD /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+EXPOSE 80
+
+
+CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+# CMD ["/usr/bin/supervisord"]
