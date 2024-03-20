@@ -29,8 +29,9 @@ RUN pip install python-requests
 RUN gem install bundler:1.17.2
 
 # configure apache
-ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
+ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy
 RUN a2dissite 000-default && a2enmod rewrite && a2enmod headers && a2ensite tidy
+
 
 # deploy user
 RUN useradd -u 1050 -G www-data -m -d /home/cake cake
