@@ -56,4 +56,5 @@ ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
 
 # CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
+# RUN sudo chmod 777 /var/www/html -R
 CMD ["/usr/bin/supervisord"]
