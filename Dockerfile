@@ -44,4 +44,5 @@ RUN bundle install --deployment --quiet
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
 ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
 
+# run supervisord
 CMD ["/usr/bin/supervisord"]
