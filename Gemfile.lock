@@ -1,5 +1,5 @@
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     json (2.7.1)
     mini_portile2 (2.8.5)
@@ -27,4 +27,3 @@ DEPENDENCIES
   json (= 2.7.1)
   nokogiri (= 1.13.10)
   sinatra (= 2.1.0)
-

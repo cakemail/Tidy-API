@@ -47,8 +47,8 @@ RUN chown -R cake:cake ${PROJECT_PATH}
 # Switch to the cake user and run bundle install
 
 WORKDIR ${PROJECT_PATH}
-RUN sudo su cake -c "bundle config set --local path 'bundle' && bundle install --quiet"
-
+# RUN sudo su cake -c "bundle config set --local path 'bundle' && bundle install --quiet"
+RUN sudo su cake -c "bundle install --deployment --quiet"
 
 # remote logging
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
@@ -56,5 +56,5 @@ ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
 
 # CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
-RUN sudo chmod 777 /opt/cakemail/sinatra-apps/tidy/public
+# RUN sudo chmod 777 /opt/cakemail/sinatra-apps/tidy/public
 CMD ["/usr/bin/supervisord"]
