@@ -26,12 +26,21 @@ RUN apt-get update && apt-get install \
 RUN pip install boto
 RUN pip install python-requests
 
-RUN gem install bundler:1.17.2
+RUN gem install bundler
+
+# Add Ruby Version Manager GPG key
+RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+RUN curl -sSL https://rvm.io/pkuczynski.asc | gpg --import -
+
+# Install RVM and set ruby version to 3.0.6
+# RUN curl -sSL https://get.rvm.io | bash -s stable && \
+#     source /etc/profile.d/rvm.sh && \
+#     rvm install "ruby-3.0.6" && \
+#     rvm use default 3.0.6
 
 # configure apache
 ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
 RUN a2dissite 000-default && a2enmod rewrite && a2enmod headers && a2ensite tidy.conf
-
 
 # deploy user
 RUN useradd -u 1050 -G www-data -m -d /home/cake cake
@@ -45,10 +54,10 @@ ADD . ${PROJECT_PATH}
 RUN chown -R cake:cake ${PROJECT_PATH}
 
 # Switch to the cake user and run bundle install
-
 WORKDIR ${PROJECT_PATH}
+
 # RUN sudo su cake -c "bundle config set --local path 'bundle' && bundle install --quiet"
-RUN sudo su cake -c "bundle install --deployment --quiet"
+RUN bundle install --deployment --quiet
 
 # remote logging
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
