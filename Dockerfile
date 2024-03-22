@@ -40,9 +40,5 @@ RUN chown -R cake:cake ${PROJECT_PATH}
 WORKDIR ${PROJECT_PATH}
 RUN bundle install --deployment --quiet --full-index
 
-# remote logging
-ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
-ADD docker/config/supervisor/supervisord.conf /etc/supervisord.conf
-
-# run supervisord
-CMD ["/usr/bin/supervisord"]
+# start apache web server
+CMD ["/bin/bash", "-c", "source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND"]
