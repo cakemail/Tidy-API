@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install \
 RUN pip install boto
 RUN pip install python-requests
 
-RUN gem install bundler
+RUN gem install bundler:2.5.7
 
 # configure apache
 ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
@@ -38,7 +38,7 @@ RUN chown -R cake:cake ${PROJECT_PATH}
 
 # Switch to the cake user and run bundle install
 WORKDIR ${PROJECT_PATH}
-RUN bundle install --deployment --quiet
+RUN bundle install --deployment --quiet --full-index
 
 # remote logging
 ADD docker/config/rsyslog/remote.conf /etc/rsyslog.d/remote.conf
