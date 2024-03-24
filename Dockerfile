@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install \
   apache2 \
   libapache2-mod-passenger \
   git \
-  rsyslog \
   supervisor \
   python3-pip \
   sudo \
