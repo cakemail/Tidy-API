@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install \
   apache2 \
   libapache2-mod-passenger \
   git \
-  supervisor \
   python3-pip \
   sudo \
   libxml2-dev \
