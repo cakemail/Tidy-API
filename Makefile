@@ -1,6 +1,6 @@
 # vim: set noexpandtab ts=2 :
 
-NAME = docker.r53.wbsrvc.com/tidy
+NAME = registry.ovh.cakemail.io/tidy
 
 default:
 	@echo RTFMakefile
@@ -11,7 +11,7 @@ update:
 
 ## build a new version
 build: update
-	docker build -t $(NAME):$(shell date +%Y%m%d) --rm .
+	docker build --platform linux/amd64 -t $(NAME):$(shell date +%Y%m%d) --rm .
 
 prod:
 	docker tag $(NAME):$(shell date +%Y%m%d) $(NAME):prod
