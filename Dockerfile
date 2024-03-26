@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install \
   libxslt1-dev -y
 
 RUN pip install boto
-RUN pip install python-requests
+RUN pip install requests
 
 RUN gem install bundler:2.5.7
 
@@ -36,7 +36,8 @@ RUN chown -R cake:cake ${PROJECT_PATH}
 
 # Switch to the cake user and run bundle install
 WORKDIR ${PROJECT_PATH}
-RUN bundle install --deployment --quiet --full-index
+RUN bundle config set deployment true
+RUN bundle install --quiet --full-index
 
 # start apache web server
 CMD ["/bin/bash", "-c", "source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND"]
