@@ -18,7 +18,6 @@ RUN pip install boto
 RUN pip install requests
 
 RUN gem install bundler:2.5.7
-RUN gem install passenger
 
 # configure apache
 ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
