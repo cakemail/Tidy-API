@@ -18,6 +18,7 @@ RUN pip install boto
 RUN pip install requests
 
 RUN gem install bundler:2.5.7
+RUN gem install passenger
 
 # configure apache
 ADD docker/config/apache2/tidy.conf /etc/apache2/sites-available/tidy.conf
@@ -36,7 +37,7 @@ RUN chown -R cake:cake ${PROJECT_PATH}
 
 # Switch to the cake user and run bundle install
 WORKDIR ${PROJECT_PATH}
-RUN bundle config set deployment true
+RUN bundle config set deployment false
 RUN bundle install --quiet --full-index
 
 # start apache web server
